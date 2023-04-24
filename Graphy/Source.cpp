@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <stdio.h>
+#include "Includes/imgui/imgui_stdlib.h"
 
 extern void ShowNodeSoup();
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);

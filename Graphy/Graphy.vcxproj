@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\volard-pc\Downloads\imgui-docking\misc\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="..\Solution Items\ImNodeSoup\fruchterman_reingold.cpp" />
     <ClCompile Include="..\Solution Items\ImNodeSoup\ImNodeSoup.cpp" />
     <ClCompile Include="..\Solution Items\ImNodeSoup\kamada_kawai.cpp" />
@@ -147,6 +148,7 @@
     <ClCompile Include="Sources\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\volard-pc\Downloads\imgui-docking\misc\cpp\imgui_stdlib.h" />
     <ClInclude Include="..\Solution Items\ImNodeSoup\fruchterman_reingold.hpp" />
     <ClInclude Include="..\Solution Items\ImNodeSoup\kamada_kawai.hpp" />
     <ClInclude Include="..\Solution Items\ImNodeSoup\nodesoup.hpp" />
