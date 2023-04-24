@@ -132,6 +132,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Solution Items\ImNodeSoup\fruchterman_reingold.cpp" />
+    <ClCompile Include="..\Solution Items\ImNodeSoup\ImNodeSoup.cpp" />
+    <ClCompile Include="..\Solution Items\ImNodeSoup\kamada_kawai.cpp" />
+    <ClCompile Include="..\Solution Items\ImNodeSoup\nodesoup.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Sources\glad\glad.c" />
     <ClCompile Include="Sources\imgui\imgui.cpp" />
@@ -143,6 +147,9 @@
     <ClCompile Include="Sources\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Solution Items\ImNodeSoup\fruchterman_reingold.hpp" />
+    <ClInclude Include="..\Solution Items\ImNodeSoup\kamada_kawai.hpp" />
+    <ClInclude Include="..\Solution Items\ImNodeSoup\nodesoup.hpp" />
     <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imconfig.h" />
     <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imgui.h" />
     <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imgui_impl_glfw.h" />
