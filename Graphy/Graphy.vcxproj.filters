@@ -13,60 +13,90 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\imgui">
+      <UniqueIdentifier>{03bc6b0a-89e7-4808-bbdb-2d6199e69910}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\imgui">
+      <UniqueIdentifier>{142d73fb-3595-4e6e-9f16-b80e13e545c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\glad">
+      <UniqueIdentifier>{18082b5f-4e2a-4b6b-99ad-81b813d660f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\glad">
+      <UniqueIdentifier>{7307c4af-61e4-460d-909e-da8c8b55df0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GLFW">
+      <UniqueIdentifier>{cfbe8022-dc86-499e-a0d8-9b8d918ed24d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\KHR">
+      <UniqueIdentifier>{ef600191-fd37-40ef-b31a-4687e3cd466b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="glad.c">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Sources\imgui\imgui.cpp">
+      <Filter>Source Files\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="E:\Users\volard\OpenGL\libs\imgui\imgui.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Sources\imgui\imgui_demo.cpp">
+      <Filter>Source Files\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="E:\Users\volard\OpenGL\libs\imgui\imgui_demo.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Sources\imgui\imgui_draw.cpp">
+      <Filter>Source Files\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="E:\Users\volard\OpenGL\libs\imgui\imgui_draw.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Sources\imgui\imgui_impl_glfw.cpp">
+      <Filter>Source Files\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="E:\Users\volard\OpenGL\libs\imgui\imgui_impl_glfw.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Sources\imgui\imgui_impl_opengl3.cpp">
+      <Filter>Source Files\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="E:\Users\volard\OpenGL\libs\imgui\imgui_impl_opengl3.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Sources\imgui\imgui_tables.cpp">
+      <Filter>Source Files\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="E:\Users\volard\OpenGL\libs\imgui\imgui_tables.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Sources\imgui\imgui_widgets.cpp">
+      <Filter>Source Files\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="E:\Users\volard\OpenGL\libs\imgui\imgui_widgets.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Sources\glad\glad.c">
+      <Filter>Source Files\glad</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imstb_truetype.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
     <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imconfig.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\imgui</Filter>
     </ClInclude>
     <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imgui.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\imgui</Filter>
     </ClInclude>
     <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imgui_impl_glfw.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\imgui</Filter>
     </ClInclude>
     <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imgui_impl_opengl3.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\imgui</Filter>
     </ClInclude>
     <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imgui_internal.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\imgui</Filter>
     </ClInclude>
     <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imstb_rectpack.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\imgui</Filter>
     </ClInclude>
     <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imstb_textedit.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imstb_truetype.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Includes\glad\glad.h">
+      <Filter>Header Files\glad</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\GLFW\glfw3.h">
+      <Filter>Header Files\GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\GLFW\glfw3native.h">
+      <Filter>Header Files\GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\KHR\khrplatform.h">
+      <Filter>Header Files\KHR</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
