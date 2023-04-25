@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 #include <cassert>
 
 
@@ -14,6 +15,7 @@
 #include "nodesoup.hpp"
 #include "fruchterman_reingold.hpp"
 #include "kamada_kawai.hpp"
+#include "../../Graphy/Includes/imgui/imgui_stdlib.h"
 
 
 #pragma region Presets
@@ -769,50 +771,6 @@ static void DrawData(
   ImGui::Text("x:%.3f  y:%.3f  scale:%.3f",gDisp.x,gDisp.y,gScale);
 }
 
-struct InputTextCallback_UserData
-{
-    std::string* Str;
-    ImGuiInputTextCallback  ChainCallback;
-    void* ChainCallbackUserData;
-};
-
-
-
-static int InputTextCallback(ImGuiInputTextCallbackData* data)
-{
-    InputTextCallback_UserData* user_data = (InputTextCallback_UserData*)data->UserData;
-    if (data->EventFlag == ImGuiInputTextFlags_CallbackResize)
-    {
-        // Resize string callback
-        // If for some reason we refuse the new length (BufTextLen) and/or capacity (BufSize) we need to set them back to what we want.
-        std::string* str = user_data->Str;
-        IM_ASSERT(data->Buf == str->c_str());
-        str->resize(data->BufTextLen);
-        data->Buf = (char*)str->c_str();
-    }
-    else if (user_data->ChainCallback)
-    {
-        // Forward to user callback, if any
-        data->UserData = user_data->ChainCallbackUserData;
-        return user_data->ChainCallback(data);
-    }
-    return 0;
-}
-
-
-
-bool StrInputTextMultiline(const char* label, std::string* str, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = InputTextCallback)
-{
-    IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
-    flags |= ImGuiInputTextFlags_CallbackResize;
-
-    InputTextCallback_UserData cb_user_data;
-    cb_user_data.Str = str;
-    cb_user_data.ChainCallback = callback;
-    //cb_user_data.ChainCallbackUserData = user_data;
-    return ImGui::InputTextMultiline(label, (char*)str->c_str(), str->capacity() + 1, size, flags, InputTextCallback, &cb_user_data);
-}
-
 
 void ShowNodeSoup()
 {
@@ -844,7 +802,7 @@ void ShowNodeSoup()
       int prev_method=method;
 
       std::string solr = "";
-      StrInputTextMultiline("custom", &solr);
+      bool customBool = ImGui::Button("Show");
 
 
       const char* items[]={"None","K6","K6-2","Small dense","Bin tree","Quad tree"};
@@ -858,6 +816,12 @@ void ShowNodeSoup()
           ImGui::Text("Energy: %.3f",static_cast<float>(method==kFruchtermanReingold?fr.GetEnergy() : ka.GetEnergy()  ));
         }
 
+      ImGui::InputTextMultiline("soh", &solr);
+
+      if (customBool) {
+          std::cout << solr;
+      }
+    
       if(change)
         {
           adj_list=read_from_dot(items_data[item_current]);
