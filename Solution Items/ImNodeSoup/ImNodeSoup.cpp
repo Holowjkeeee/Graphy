@@ -6,15 +6,12 @@
 #include <iostream>
 #include <cassert>
 
-
 #define IMGUI_DEFINE_MATH_OPERATORS
 
 #include "imgui.h"
 #include "imgui_internal.h"
-
 #include "nodesoup.hpp"
 #include "fruchterman_reingold.hpp"
-#include "kamada_kawai.hpp"
 #include "../../Graphy/Includes/imgui/imgui_stdlib.h"
 
 
@@ -519,354 +516,212 @@ v99
 
 const float kWindowInitWidth = 800.0f;
 const float kWindowInitHeight = 600.0f;
-static ImVec2 gDisp {0.0f, 0.0f};
-static float  gScale = 1.0f;
+static ImVec2 graphDisplay {0.0f, 0.0f};
+static float  graphScale = 1.0f;
 
 
-// Read simple dot files
+/// <summary>
+/// Read simple dot files
+/// </summary>
+/// <param name="aDotData"></param>
+/// <returns></returns>
 nodesoup::adj_list_t read_from_dot(const char* aDotData)
 {
-  nodesoup::adj_list_t adj_list;
+    nodesoup::adj_list_t adj_list;
 
-  std::istringstream ifs(aDotData);
-  if (!ifs.good())
+    std::istringstream ifs(aDotData);
+    if (!ifs.good())
     {
-      return adj_list;
+        return adj_list;
     }
 
-  std::unordered_map<std::string, nodesoup::vertex_id_t> names;
+    std::unordered_map<std::string, nodesoup::vertex_id_t> names;
 
-  auto name_to_vertex_id = [&adj_list,&names](std::string name) -> nodesoup::vertex_id_t
-  {
-    if(name[name.size() - 1] == ';')
-      {
-        name.erase(name.end() - 1, name.end());
-      }
-
-    nodesoup::vertex_id_t v_id;
-    auto it = names.find(name);
-    if (it != names.end())
-      {
-        return (*it).second;
-      }
-
-    v_id = adj_list.size();
-    names.insert({ name, v_id });
-    adj_list.resize(v_id + 1);
-    return v_id;
-  };
-
-  std::string line;
-  // skip first line
-  std::getline(ifs, line);
-
-  while (std::getline(ifs, line))
+    auto name_to_vertex_id = [&adj_list,&names](std::string name) -> nodesoup::vertex_id_t
     {
-      if (line[0] == '}')
+        if(name[name.size() - 1] == ';')
         {
-          break;
+            name.erase(name.end() - 1, name.end());
         }
 
-      std::istringstream iss(line);
-      std::string name, edge_sign, adj_name;
-      iss >> name >> edge_sign >> adj_name;
-
-      // add vertex if new
-      nodesoup::vertex_id_t v_id = name_to_vertex_id(name);
-
-      assert(edge_sign == "--" || edge_sign.size() == 0);
-      if (edge_sign != "--")
+        nodesoup::vertex_id_t v_id;
+        auto it = names.find(name);
+        if (it != names.end())
         {
-          continue;
+            return (*it).second;
         }
 
-      // add adjacent vertex if new
-      nodesoup::vertex_id_t adj_id = name_to_vertex_id(adj_name);
+        v_id = adj_list.size();
+        names.insert({ name, v_id });
+        adj_list.resize(v_id + 1);
+        return v_id;
+    };
 
-      // add edge if new
-      if (find(adj_list[v_id].begin(),adj_list[v_id].end(), adj_id) == adj_list[v_id].end())
+    std::string line;
+    // skip first line
+    std::getline(ifs, line);
+
+    while (std::getline(ifs, line))
+    {
+        if (line[0] == '}')
         {
-          adj_list[v_id].push_back(adj_id);
-          adj_list[adj_id].push_back(v_id);
+            break;
+        }
+
+        std::istringstream iss(line);
+        std::string name;
+        std::string edge_sign;
+        std::string adj_name;
+        iss >> name >> edge_sign >> adj_name;
+
+        // add vertex if new
+        nodesoup::vertex_id_t v_id = name_to_vertex_id(name);
+
+        assert(edge_sign == "--" || edge_sign.size() == 0);
+        if (edge_sign != "--") continue;
+
+        // add adjacent vertex if new
+        nodesoup::vertex_id_t adj_id = name_to_vertex_id(adj_name);
+
+        // add edge if new
+        if (find(adj_list[v_id].begin(),adj_list[v_id].end(), adj_id) == adj_list[v_id].end())
+        {
+            adj_list[v_id].push_back(adj_id);
+            adj_list[adj_id].push_back(v_id);
         }
     }
 
-  return adj_list;
+    return adj_list;
+}
+
+/// <summary>
+/// Get square distance between positions
+/// </summary>
+static inline float squaredDistance(const ImVec2& a, const ImVec2& b) noexcept
+{
+  ImVec2 delta = a - b;
+  return delta.x * delta.x + delta.y * delta.y;
 }
 
 
-// Move resource?
-struct MoveRes
-{
-  bool   m_Moved;
-  bool   m_Recalculate;
-  nodesoup::vertex_id_t m_Index;
-  ImVec2 m_Disp;
-};
-
-
-// square distance between positions
-static inline float sq_dist(const ImVec2& aPos1,const ImVec2& aPos2) noexcept
-{
-  ImVec2 d = aPos2 - aPos1;
-  return d.x * d.x + d.y * d.y;
-}
-
-
-// Get cursor position?
 static ImVec2 GetStartPos() noexcept
 {
   ImGuiWindow const* window = ImGui::GetCurrentWindowRead();
-  return window->Pos + gDisp;
+  return window->Pos + graphDisplay;
 }
-
-
-// Get vertex position under cursor or -1 if no vertex nearby cursor found?
-static nodesoup::vertex_id_t GetPosAt(const ImVec2& aPos,const std::vector<NsPosition>& aPositions)
-{
-  ImVec2 origin(kWindowInitWidth / 2.0, kWindowInitHeight / 2.0); // window center position
-  ImVec2 cursor_pos=GetStartPos();
-
-  for(nodesoup::vertex_id_t v_id = 0; v_id < aPositions.size(); v_id++)
-    {
-      ImVec2 v_pos = aPositions[v_id].m_Pos * gScale+origin+cursor_pos;
-
-      if(sq_dist(v_pos, aPos) < 2.0f * aPositions[v_id].m_Radius * aPositions[v_id].m_Radius)
-		{
-		  return v_id;
-		}
-    }
-
-  return -1;
-}
-
-
-// Move vertex's position
-static MoveRes MovePos(const std::vector<NsPosition>& aPositions)
-{
-  MoveRes res;
-
-  ImGuiIO const& io = ImGui::GetIO();
-
-  // if nothing happened?
-  if(!io.MouseDown[1] && !io.MouseReleased[1])
-    {
-      res.m_Moved=false;
-      res.m_Recalculate=false;
-
-      return res;
-    }
-
-  ImVec2 mouse_pos=io.MousePos;
-  nodesoup::vertex_id_t v_id=GetPosAt(mouse_pos,aPositions);
-  if(v_id==-1) // Not over a node
-    {
-      res.m_Moved=false;
-      res.m_Recalculate=false;
-      return res;
-    }
-
-  if(io.MouseDown[1])
-    {
-      res.m_Index=v_id;
-      res.m_Disp=io.MouseDelta/gScale;
-      res.m_Moved=true;
-      res.m_Recalculate=false;
-      return res;
-    }
-
-  if(io.MouseReleased[1])
-    {
-      res.m_Index=v_id;
-      res.m_Recalculate=true;
-
-      if(io.MouseDragMaxDistanceSqr[1]<10)
-        {
-          res.m_Disp={kInvalidPos,kInvalidPos};
-        }
-      else
-        {
-          res.m_Disp=io.MouseDelta/gScale;
-        }
-
-      return res;
-    }
-
-  //assert(0);
-
-  res.m_Moved=false;
-  res.m_Recalculate=false;
-
-  return res;
-}
-
 
 
 static void DrawData(
     const nodesoup::adj_list_t& aAdjList,
     const std::vector<NsPosition>& aPositions,
-    bool aAllowMove,
-    bool aDrawDebug)
+    bool aDrawDebug
+)
 {
-  ImGuiWindow const* window=ImGui::GetCurrentWindow();
-  ImGuiIO const& io=ImGui::GetIO();
+    ImGuiWindow const* window = ImGui::GetCurrentWindow();
+    ImGuiIO const& io = ImGui::GetIO();
 
-  if(io.MouseDownDuration[1]>0.0 && aAllowMove)
-    {
-      if (window->InnerClipRect.Contains(io.MousePos))
-        {
-          gDisp+=io.MouseDelta;
-        }
-    }
+    if (io.MouseDownDuration[1] > 0.0 && window->InnerClipRect.Contains(io.MousePos))
+        graphDisplay += io.MouseDelta;
   
-  // Adjust scale
-  if(io.MouseWheel>0.0f)
+    // Adjust scale
+    if(io.MouseWheel > 0.0f) graphScale*=1.1f;
+    else if(io.MouseWheel < 0.0f) graphScale*=0.9f;
+
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+    ImVec2 cursor_pos = GetStartPos();
+
+    ImVec2 origin(kWindowInitWidth / 2.0, kWindowInitHeight / 2.0);
+
+    const ImU32 node_col     = ImGui::GetColorU32(ImGuiCol_ScrollbarGrabActive);
+    const ImU32 node_fix_col = ImGui::GetColorU32(ImGuiCol_NavHighlight);
+    const ImU32 arc_col      = ImGui::GetColorU32(ImGuiCol_ScrollbarGrab);
+    const ImU32 txt_col      = ImGui::GetColorU32(ImGuiCol_Text);
+
+
+    for(nodesoup::vertex_id_t v_id = 0; v_id<aAdjList.size(); v_id++)
     {
-      gScale*=1.1f;
-    }
-  else if(io.MouseWheel<0.0f)
-    {
-      gScale*=0.9f;
-    }
+        const NsPosition& currentPosition = aPositions[v_id];
+        ImVec2 v_pos = currentPosition.m_Pos * graphScale + origin;
 
-  ImDrawList* draw_list=ImGui::GetWindowDrawList();
-  ImVec2 cursor_pos=GetStartPos();
-
-  ImVec2 origin(kWindowInitWidth/2.0,kWindowInitHeight/2.0);
-
-  const ImU32 node_col=ImGui::GetColorU32(ImGuiCol_ScrollbarGrabActive);
-  const ImU32 node_fix_col=ImGui::GetColorU32(ImGuiCol_NavHighlight);
-  const ImU32 arc_col =ImGui::GetColorU32(ImGuiCol_ScrollbarGrab);
-  const ImU32 txt_col =ImGui::GetColorU32(ImGuiCol_Text);
-
-
-  for(nodesoup::vertex_id_t v_id=0; v_id<aAdjList.size(); v_id++)
-    {
-      const NsPosition& curr_pos=aPositions[v_id];
-      ImVec2 v_pos=curr_pos.m_Pos*gScale+origin;
-
-      for(auto adj_id:aAdjList[v_id])
+        for(auto adj_id:aAdjList[v_id])
         {
-          if(adj_id < v_id)
-            {
-              continue;
-            }
+            if(adj_id < v_id)continue;
 
-          ImVec2 adj_pos=aPositions[adj_id].m_Pos*gScale+origin;
-          draw_list->AddLine(cursor_pos+v_pos,cursor_pos+adj_pos,arc_col, 5.F);
+            ImVec2 adj_pos = aPositions[adj_id].m_Pos * graphScale + origin;
+            draw_list -> AddLine(cursor_pos + v_pos,cursor_pos + adj_pos,arc_col, 5.F);
         }
 
 
-      draw_list->AddCircleFilled(cursor_pos+ImVec2(v_pos.x,v_pos.y),curr_pos.m_Radius, node_col);
-      if(aDrawDebug)
+        draw_list -> AddCircleFilled(cursor_pos + ImVec2(v_pos.x, v_pos.y), currentPosition.m_Radius, node_col);
+
+        if(aDrawDebug)
         {
-          draw_list->AddText(cursor_pos+ImVec2(v_pos.x,v_pos.y),       txt_col, std::to_string(v_id).c_str());
-          draw_list->AddText(cursor_pos+ImVec2(v_pos.x,v_pos.y+20.0f), txt_col, std::to_string(v_pos.x).c_str());
-          draw_list->AddText(cursor_pos+ImVec2(v_pos.x,v_pos.y+40.0f), txt_col, std::to_string(v_pos.y).c_str());
+            draw_list->
+                AddText(cursor_pos+ImVec2(v_pos.x,v_pos.y),       txt_col, std::to_string(v_id)   .c_str());
+            draw_list->
+                AddText(cursor_pos+ImVec2(v_pos.x,v_pos.y+20.0f), txt_col, std::to_string(v_pos.x).c_str());
+            draw_list->
+                AddText(cursor_pos+ImVec2(v_pos.x,v_pos.y+40.0f), txt_col, std::to_string(v_pos.y).c_str());
         }
     }
 
-  ImGuiContext& g = *GImGui;
-  ImGui::SetCursorPos({20.0f,window->InnerClipRect.GetHeight()-g.FontSize });
-  ImGui::Text("x:%.3f  y:%.3f  scale:%.3f",gDisp.x,gDisp.y,gScale);
+    ImGuiContext const& g = *GImGui;
+    ImGui::SetCursorPos({20.0f,window -> InnerClipRect.GetHeight()-g.FontSize });
+    ImGui::Text("x:%.3f  y:%.3f  scale:%.3f", graphDisplay.x, graphDisplay.y, graphScale);
 }
 
 
+static void solve() 
+{
+    
+}
+
 void ShowNodeSoup()
 {
-  static std::vector<NsPosition> positions; // vertexes' positions?
-  static std::vector<float> radiuses; // vertexes' radiuses?
+    static std::vector<NsPosition> positions; // vertexes' positions
+    static std::vector<float> radiuses; // vertexes' radiuses
 
-  float k=15.0; // a constant used to compute attractive and repulsive forces between vertices
+    float k = 15.0; // a constant used to compute attractive and repulsive forces between vertices
 
-  static nodesoup::adj_list_t adj_list;
-  static nodesoup::FruchtermanReingold fr(adj_list,k);
-  static nodesoup::KamadaKawai ka(adj_list,k);
+    static nodesoup::adj_list_t adj_list;
+    static nodesoup::FruchtermanReingold fr(adj_list,k);
 
-  constexpr int kFruchtermanReingold=0;
-  constexpr int kKamadaKawai=1;
-  static int method=kFruchtermanReingold;
+    constexpr int kCircle=0;
+    static int init_mode=kCircle;
 
-  constexpr int kCircle=0;
-  constexpr int kRandom=1;
-  static int init_mode=kCircle;
+    static bool draw_debug=false;
 
-  static bool draw_debug=false;
+    ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f), ImGuiCond_Appearing);
+    ImGui::SetNextWindowSize(ImVec2(kWindowInitWidth, kWindowInitHeight), ImGuiCond_Appearing);
 
+    if (ImGui::Begin("NodeSoup", nullptr))
+    {
+        const char* items[]={"None", "K6", "K6-2", "Small dense", "Bin tree", "Quad tree"};
+        const char* items_data[] = {"", k6_dot, k6_2_dot, small_dense_dot, bin_tree_dot, quad_tree_dot};
+        static int item_current=0;
+        bool change=ImGui::Combo("Data", &item_current, items, IM_ARRAYSIZE(items));
 
-  ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f), ImGuiCond_Appearing);
-  ImGui::SetNextWindowSize(ImVec2(kWindowInitWidth,kWindowInitHeight), ImGuiCond_Appearing);
-
-  if (ImGui::Begin("NodeSoup",nullptr))
-  {
-      int prev_method=method;
-
-      std::string solr = "";
-      bool customBool = ImGui::Button("Show");
-
-
-      const char* items[]={"None","K6","K6-2","Small dense","Bin tree","Quad tree"};
-      const char* items_data[] = {"", k6_dot,k6_2_dot,small_dense_dot,bin_tree_dot,quad_tree_dot};
-      static int item_current=0;
-      bool change=ImGui::Combo("Data", &item_current,items,IM_ARRAYSIZE(items));
-
-      ImGui::Checkbox("Show debug info",&draw_debug);
-      if(draw_debug)
+        ImGui::Checkbox("Show debug info", &draw_debug);
+        if(draw_debug)
         {
-          ImGui::Text("Energy: %.3f",static_cast<float>(method==kFruchtermanReingold?fr.GetEnergy() : ka.GetEnergy()  ));
+            ImGui::Text("Energy: %.3f",static_cast<float>(fr.GetEnergy()));
         }
-
-      ImGui::InputTextMultiline("soh", &solr);
-
-      if (customBool) {
-          std::cout << solr;
-      }
     
-      if(change)
+        if(change)
         {
-          adj_list=read_from_dot(items_data[item_current]);
-          positions.resize(adj_list.size());
-          nodesoup::SetRadiuses(adj_list,positions);
-
-
-          if(method==kFruchtermanReingold)
-            {
-              fr.Start(init_mode==kCircle);
-            }
-          else
-            {
-              ka.Start(init_mode==kCircle);
-            }
+            adj_list=read_from_dot(items_data[item_current]);
+            positions.resize(adj_list.size());
+            nodesoup::SetRadiuses(adj_list,positions);
+            fr.Start(init_mode == kCircle);
         }
 
         if(!adj_list.empty())
-          {
-            if(method==kFruchtermanReingold)
-              {
-                fr.Step(15,0,positions);
-              }
-            else
-              {
-                ka.Step(kWindowInitWidth,kWindowInitHeight,positions);
-              }
-          }
-
-      MoveRes r=MovePos(positions);
-      if(r.m_Moved)
         {
-          if(method==kFruchtermanReingold)
-            {
-              fr.MovePos(r.m_Index,r.m_Disp,r.m_Recalculate);
-            }
-         /* else
-            {
-              ka.MovePos(r.m_Index,r.m_Disp,r.m_Recalculate);
-            }*/
+            fr.Step(15,0,positions);
         }
 
-      DrawData(adj_list,positions,true,draw_debug);
+        DrawData(adj_list,positions, draw_debug);
 
-      ImGui::End();
+        ImGui::End();
     }
-
 }
