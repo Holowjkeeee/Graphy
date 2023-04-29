@@ -11,21 +11,21 @@ extern void ShowNodeSoup();
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
-
 static void glfw_error_callback(int error, const char* description)
 {
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
 
 
-
 int main() {
 
 	// glfw: initialize and configure
 	glfwSetErrorCallback(glfw_error_callback);
-    if (!glfwInit())
+    if (!glfwInit()) 
+    {
         return 1;
-
+    }
+        
 
 	// Decide GL+GLSL versions
 #if defined(IMGUI_IMPL_OPENGL_ES2)
@@ -47,8 +47,6 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 #endif
-
-
 
 	// glfw window creation
     GLFWwindow* window = glfwCreateWindow(800, 600, "Graphy", nullptr, nullptr);
@@ -77,8 +75,6 @@ int main() {
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
     io.ConfigViewportsNoAutoMerge = true;
     io.ConfigViewportsNoTaskBarIcon = true;
-
-    // Setup Dear ImGui style
     ImGui::StyleColorsDark();
 
     // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
@@ -93,22 +89,22 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-
 	// render loop
     while (!glfwWindowShouldClose(window))
     {
         // input
         processInput(window);
 
-       //  feed inputs to dear imgui, start new frame
+        // feed inputs to dear imgui, start new frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::ShowDemoWindow();
+        // UI itself
+        ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
         ShowNodeSoup();
-
-         // Rendering
+        
+        // Rendering
         ImGui::Render();
         int display_w;
         int display_h;
@@ -137,22 +133,28 @@ int main() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-
     glfwDestroyWindow(window);
     glfwTerminate();
-
     return 0;
-
 }
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+
+/// <summary>
+/// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+/// </summary>
+/// <param name="window"></param>
 void processInput(GLFWwindow *window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
 
-// glfw: whenever the window size changed (by OS or user) this callback function executes
+/// <summary>
+/// glfw: whenever the window size changed (by OS or user) this callback function executes
+/// </summary>
+/// <param name="window"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     // tell OpenGL the size of the rendering window so OpenGL knows how we 
