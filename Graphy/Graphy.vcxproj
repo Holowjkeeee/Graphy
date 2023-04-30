@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>E:\Users\volard\OpenGL\libs;E:\Users\volard\OpenGL;E:\Users\volard\OpenGL\includes;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\Users\volard\OpenGL\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>F:\Kirill\Projects\Graphy;$(IncludePath)</IncludePath>
+    <LibraryPath>F:\Kirill\Projects\Graphy\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -132,36 +132,44 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\volard-pc\Downloads\imgui-docking\misc\cpp\imgui_stdlib.cpp" />
-    <ClCompile Include="..\Solution Items\ImNodeSoup\fruchterman_reingold.cpp" />
-    <ClCompile Include="..\Solution Items\ImNodeSoup\ImNodeSoup.cpp" />
-    <ClCompile Include="..\Solution Items\ImNodeSoup\nodesoup.cpp" />
+    <ClCompile Include="..\glad\glad.c" />
+    <ClCompile Include="..\imgui\imgui.cpp" />
+    <ClCompile Include="..\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="..\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\imgui\imgui_stdlib.cpp" />
+    <ClCompile Include="..\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\ImNodeSoup\fruchterman_reingold.cpp" />
+    <ClCompile Include="..\ImNodeSoup\ImNodeSoup.cpp" />
+    <ClCompile Include="..\ImNodeSoup\nodesoup.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="Sources\glad\glad.c" />
-    <ClCompile Include="Sources\imgui\imgui.cpp" />
-    <ClCompile Include="Sources\imgui\imgui_demo.cpp" />
-    <ClCompile Include="Sources\imgui\imgui_draw.cpp" />
-    <ClCompile Include="Sources\imgui\imgui_impl_glfw.cpp" />
-    <ClCompile Include="Sources\imgui\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="Sources\imgui\imgui_tables.cpp" />
-    <ClCompile Include="Sources\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\volard-pc\Downloads\imgui-docking\misc\cpp\imgui_stdlib.h" />
-    <ClInclude Include="..\Solution Items\ImNodeSoup\fruchterman_reingold.hpp" />
-    <ClInclude Include="..\Solution Items\ImNodeSoup\nodesoup.hpp" />
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imconfig.h" />
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imgui.h" />
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imgui_impl_glfw.h" />
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imgui_impl_opengl3.h" />
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imgui_internal.h" />
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imstb_rectpack.h" />
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imstb_textedit.h" />
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imstb_truetype.h" />
-    <ClInclude Include="Includes\glad\glad.h" />
-    <ClInclude Include="Includes\GLFW\glfw3.h" />
-    <ClInclude Include="Includes\GLFW\glfw3native.h" />
-    <ClInclude Include="Includes\KHR\khrplatform.h" />
+    <ClInclude Include="..\glad\glad.h" />
+    <ClInclude Include="..\GLFW\glfw3.h" />
+    <ClInclude Include="..\GLFW\glfw3native.h" />
+    <ClInclude Include="..\imgui\imconfig.h" />
+    <ClInclude Include="..\imgui\imgui.h" />
+    <ClInclude Include="..\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="..\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="..\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="..\imgui\imgui_internal.h" />
+    <ClInclude Include="..\imgui\imgui_stdlib.h" />
+    <ClInclude Include="..\imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\imgui\imstb_textedit.h" />
+    <ClInclude Include="..\imgui\imstb_truetype.h" />
+    <ClInclude Include="..\ImNodeSoup\fruchterman_reingold.hpp" />
+    <ClInclude Include="..\ImNodeSoup\nodesoup.hpp" />
+    <ClInclude Include="..\KHR\khrplatform.h" />
+    <ClInclude Include="presets.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\libs\glfw3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\libs\glfw3.pdb" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

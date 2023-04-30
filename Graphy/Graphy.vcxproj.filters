@@ -1,123 +1,130 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Graphy">
+      <UniqueIdentifier>{54fc9f06-a02e-44f1-ab17-b8a7880c7cdd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="glad">
+      <UniqueIdentifier>{66d5a4ad-907e-43dc-bf40-f1f52b50670e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="KHR">
+      <UniqueIdentifier>{267ba262-ea09-4fd6-b5a5-ca330870a884}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\imgui">
-      <UniqueIdentifier>{03bc6b0a-89e7-4808-bbdb-2d6199e69910}</UniqueIdentifier>
+    <Filter Include="ImNodeSoup">
+      <UniqueIdentifier>{0471fa3f-cdd1-4737-93fb-e9ec3b40b048}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\imgui">
-      <UniqueIdentifier>{142d73fb-3595-4e6e-9f16-b80e13e545c4}</UniqueIdentifier>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{dba6b89f-12ec-4e60-b401-fac9cb11e2c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\glad">
-      <UniqueIdentifier>{18082b5f-4e2a-4b6b-99ad-81b813d660f9}</UniqueIdentifier>
+    <Filter Include="libs">
+      <UniqueIdentifier>{75967776-3a7d-41fd-bfed-404ae12ce75e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\glad">
-      <UniqueIdentifier>{7307c4af-61e4-460d-909e-da8c8b55df0f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\GLFW">
-      <UniqueIdentifier>{cfbe8022-dc86-499e-a0d8-9b8d918ed24d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\KHR">
-      <UniqueIdentifier>{ef600191-fd37-40ef-b31a-4687e3cd466b}</UniqueIdentifier>
+    <Filter Include="GLFW">
+      <UniqueIdentifier>{33288b7f-34e8-4ad3-8572-fd1f35e1a59d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Graphy</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\imgui\imgui.cpp">
-      <Filter>Source Files\imgui</Filter>
+    <ClCompile Include="..\glad\glad.c">
+      <Filter>glad</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\imgui\imgui_demo.cpp">
-      <Filter>Source Files\imgui</Filter>
+    <ClCompile Include="..\ImNodeSoup\fruchterman_reingold.cpp">
+      <Filter>ImNodeSoup</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\imgui\imgui_draw.cpp">
-      <Filter>Source Files\imgui</Filter>
+    <ClCompile Include="..\ImNodeSoup\ImNodeSoup.cpp">
+      <Filter>ImNodeSoup</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\imgui\imgui_impl_glfw.cpp">
-      <Filter>Source Files\imgui</Filter>
+    <ClCompile Include="..\ImNodeSoup\nodesoup.cpp">
+      <Filter>ImNodeSoup</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\imgui\imgui_impl_opengl3.cpp">
-      <Filter>Source Files\imgui</Filter>
+    <ClCompile Include="..\imgui\imgui.cpp">
+      <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\imgui\imgui_tables.cpp">
-      <Filter>Source Files\imgui</Filter>
+    <ClCompile Include="..\imgui\imgui_demo.cpp">
+      <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\imgui\imgui_widgets.cpp">
-      <Filter>Source Files\imgui</Filter>
+    <ClCompile Include="..\imgui\imgui_draw.cpp">
+      <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\glad\glad.c">
-      <Filter>Source Files\glad</Filter>
+    <ClCompile Include="..\imgui\imgui_impl_glfw.cpp">
+      <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="..\Solution Items\ImNodeSoup\fruchterman_reingold.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\imgui\imgui_impl_opengl3.cpp">
+      <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="..\Solution Items\ImNodeSoup\ImNodeSoup.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\imgui\imgui_stdlib.cpp">
+      <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="..\Solution Items\ImNodeSoup\nodesoup.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\imgui\imgui_tables.cpp">
+      <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\volard-pc\Downloads\imgui-docking\misc\cpp\imgui_stdlib.cpp">
-      <Filter>Source Files\imgui</Filter>
+    <ClCompile Include="..\imgui\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imstb_truetype.h">
-      <Filter>Header Files\imgui</Filter>
+    <ClInclude Include="presets.hpp">
+      <Filter>Graphy</Filter>
     </ClInclude>
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imconfig.h">
-      <Filter>Header Files\imgui</Filter>
+    <ClInclude Include="..\glad\glad.h">
+      <Filter>glad</Filter>
     </ClInclude>
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imgui.h">
-      <Filter>Header Files\imgui</Filter>
+    <ClInclude Include="..\KHR\khrplatform.h">
+      <Filter>KHR</Filter>
     </ClInclude>
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imgui_impl_glfw.h">
-      <Filter>Header Files\imgui</Filter>
+    <ClInclude Include="..\ImNodeSoup\fruchterman_reingold.hpp">
+      <Filter>ImNodeSoup</Filter>
     </ClInclude>
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imgui_impl_opengl3.h">
-      <Filter>Header Files\imgui</Filter>
+    <ClInclude Include="..\ImNodeSoup\nodesoup.hpp">
+      <Filter>ImNodeSoup</Filter>
     </ClInclude>
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imgui_internal.h">
-      <Filter>Header Files\imgui</Filter>
+    <ClInclude Include="..\imgui\imconfig.h">
+      <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imstb_rectpack.h">
-      <Filter>Header Files\imgui</Filter>
+    <ClInclude Include="..\imgui\imgui.h">
+      <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="E:\Users\volard\OpenGL\includes\imgui\imstb_textedit.h">
-      <Filter>Header Files\imgui</Filter>
+    <ClInclude Include="..\imgui\imgui_impl_glfw.h">
+      <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Includes\glad\glad.h">
-      <Filter>Header Files\glad</Filter>
+    <ClInclude Include="..\imgui\imgui_impl_opengl3.h">
+      <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Includes\GLFW\glfw3.h">
-      <Filter>Header Files\GLFW</Filter>
+    <ClInclude Include="..\imgui\imgui_impl_opengl3_loader.h">
+      <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Includes\GLFW\glfw3native.h">
-      <Filter>Header Files\GLFW</Filter>
+    <ClInclude Include="..\imgui\imgui_internal.h">
+      <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Includes\KHR\khrplatform.h">
-      <Filter>Header Files\KHR</Filter>
+    <ClInclude Include="..\imgui\imgui_stdlib.h">
+      <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="..\Solution Items\ImNodeSoup\fruchterman_reingold.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\imgui\imstb_rectpack.h">
+      <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="..\Solution Items\ImNodeSoup\nodesoup.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\imgui\imstb_textedit.h">
+      <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\volard-pc\Downloads\imgui-docking\misc\cpp\imgui_stdlib.h">
-      <Filter>Header Files\imgui</Filter>
+    <ClInclude Include="..\imgui\imstb_truetype.h">
+      <Filter>imgui</Filter>
     </ClInclude>
+    <ClInclude Include="..\GLFW\glfw3.h">
+      <Filter>GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GLFW\glfw3native.h">
+      <Filter>GLFW</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\libs\glfw3.lib">
+      <Filter>libs</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\libs\glfw3.pdb">
+      <Filter>libs</Filter>
+    </None>
   </ItemGroup>
 </Project>

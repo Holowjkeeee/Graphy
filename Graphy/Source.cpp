@@ -5,7 +5,6 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <stdio.h>
-#include "Includes/imgui/imgui_stdlib.h"
 
 extern void ShowNodeSoup();
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -16,40 +15,60 @@ static void glfw_error_callback(int error, const char* description)
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
 
-
-int main() {
-
-	// glfw: initialize and configure
-	glfwSetErrorCallback(glfw_error_callback);
-    if (!glfwInit()) 
+const char* initGlfwSettings()
+{
+    // glfw: initialize and configure
+    glfwSetErrorCallback(glfw_error_callback);
+    if (!glfwInit())
     {
-        return 1;
+        std::cout << "gltwInit() failed\n";
+        exit(EXIT_FAILURE);
     }
-        
 
-	// Decide GL+GLSL versions
+    // Decide GL+GLSL versions
+    const char* glsl_version;
+
 #if defined(IMGUI_IMPL_OPENGL_ES2)
     // GL ES 2.0 + GLSL 100
-    const char* glsl_version = "#version 100";
+    glsl_version = "#version 100";
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
 #elif defined(__APPLE__)
     // GL 3.2 + GLSL 150
-    const char* glsl_version = "#version 150";
+    glsl_version = "#version 150";
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
 #else
     // GL 3.0 + GLSL 130
-    const char* glsl_version = "#version 130";
+    glsl_version = "#version 130";
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 #endif
 
+    return glsl_version;
+}
+
+/// <summary>
+/// glad: load all OpenGL function pointers
+/// </summary>
+void initGlad()
+{
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD\n";
+        exit(EXIT_FAILURE);
+    }
+}
+
+int main() {
+
+    const char* glsl_version = initGlfwSettings();
+
 	// glfw window creation
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Graphy", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(1300, 800, "Graphy", nullptr, nullptr);
 	if (window == nullptr)
 	{
 		std::cout << "Failed to create GLFW window/n";
@@ -58,12 +77,7 @@ int main() {
 	}
 	glfwMakeContextCurrent(window);
 
-	// glad: load all OpenGL function pointers
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize GLAD/n";
-		return -1;
-	}   
+    initGlad();
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -100,9 +114,10 @@ int main() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // UI itself
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
+
         ShowNodeSoup();
+        //ImGui::ShowDemoWindow();
         
         // Rendering
         ImGui::Render();
@@ -155,7 +170,7 @@ void processInput(GLFWwindow *window)
 /// <param name="window"></param>
 /// <param name="width"></param>
 /// <param name="height"></param>
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback([[maybe_unused]] GLFWwindow const* window, int width, int height)
 {
     // tell OpenGL the size of the rendering window so OpenGL knows how we 
     // want to display the data and coordinates with respect to the window.
