@@ -613,7 +613,7 @@ static ImVec2 GetStartPos() noexcept
 
 static void DrawData(
     const nodesoup::adj_list_t& aAdjList,
-    const std::vector<NsPosition>& aPositions,
+    const std::vector<Vertex>& aPositions,
     bool aDrawDebug
 )
 {
@@ -640,19 +640,19 @@ static void DrawData(
 
     for(nodesoup::vertex_id_t v_id = 0; v_id<aAdjList.size(); v_id++)
     {
-        const NsPosition& currentPosition = aPositions[v_id];
-        ImVec2 v_pos = currentPosition.m_Pos * graphScale + origin;
+        const Vertex& currentPosition = aPositions[v_id];
+        ImVec2 v_pos = currentPosition.Position * graphScale + origin;
 
         for(auto adj_id:aAdjList[v_id])
         {
             if(adj_id < v_id)continue;
 
-            ImVec2 adj_pos = aPositions[adj_id].m_Pos * graphScale + origin;
+            ImVec2 adj_pos = aPositions[adj_id].Position * graphScale + origin;
             draw_list -> AddLine(cursor_pos + v_pos,cursor_pos + adj_pos,arc_col, 5.F);
         }
 
 
-        draw_list -> AddCircleFilled(cursor_pos + ImVec2(v_pos.x, v_pos.y), currentPosition.m_Radius, node_col);
+        draw_list -> AddCircleFilled(cursor_pos + ImVec2(v_pos.x, v_pos.y), currentPosition.Radius, node_col);
 
         if(aDrawDebug)
         {
@@ -678,7 +678,7 @@ static void solve()
 
 void ShowNodeSoup()
 {
-    static std::vector<NsPosition> positions; // vertexes' positions
+    static std::vector<Vertex> positions; // vertexes' positions
     static std::vector<float> radiuses; // vertexes' radiuses
 
     float k = 15.0; // a constant used to compute attractive and repulsive forces between vertices

@@ -66,9 +66,6 @@
     <ClCompile Include="..\Solution Items\ImNodeSoup\ImNodeSoup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Solution Items\ImNodeSoup\kamada_kawai.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Solution Items\ImNodeSoup\nodesoup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -114,9 +111,6 @@
       <Filter>Header Files\KHR</Filter>
     </ClInclude>
     <ClInclude Include="..\Solution Items\ImNodeSoup\fruchterman_reingold.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Solution Items\ImNodeSoup\kamada_kawai.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Solution Items\ImNodeSoup\nodesoup.hpp">
