@@ -144,6 +144,9 @@
     <ClCompile Include="..\ImNodeSoup\fruchterman_reingold.cpp" />
     <ClCompile Include="..\ImNodeSoup\ImNodeSoup.cpp" />
     <ClCompile Include="..\ImNodeSoup\nodesoup.cpp" />
+    <ClCompile Include="..\implot\implot.cpp" />
+    <ClCompile Include="..\implot\implot_demo.cpp" />
+    <ClCompile Include="..\implot\implot_items.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +165,8 @@
     <ClInclude Include="..\imgui\imstb_truetype.h" />
     <ClInclude Include="..\ImNodeSoup\fruchterman_reingold.hpp" />
     <ClInclude Include="..\ImNodeSoup\nodesoup.hpp" />
+    <ClInclude Include="..\implot\implot.h" />
+    <ClInclude Include="..\implot\implot_internal.h" />
     <ClInclude Include="..\KHR\khrplatform.h" />
     <ClInclude Include="presets.hpp" />
   </ItemGroup>

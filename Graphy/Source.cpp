@@ -3,6 +3,7 @@
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 #include <GLFW/glfw3.h>
+#include <implot/implot.h>
 #include <iostream>
 #include <stdio.h>
 
@@ -90,6 +91,7 @@ int main() {
     io.ConfigViewportsNoAutoMerge = true;
     io.ConfigViewportsNoTaskBarIcon = true;
     ImGui::StyleColorsDark();
+    ImPlot::CreateContext();
 
     // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
     ImGuiStyle& style = ImGui::GetStyle();

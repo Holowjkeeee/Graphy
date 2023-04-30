@@ -22,6 +22,9 @@
     <Filter Include="GLFW">
       <UniqueIdentifier>{33288b7f-34e8-4ad3-8572-fd1f35e1a59d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="implot">
+      <UniqueIdentifier>{8f6c4674-82c8-4514-98c4-97ce6bca8722}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -62,6 +65,15 @@
     </ClCompile>
     <ClCompile Include="..\imgui\imgui_widgets.cpp">
       <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\implot\implot.cpp">
+      <Filter>implot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\implot\implot_demo.cpp">
+      <Filter>implot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\implot\implot_items.cpp">
+      <Filter>implot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +127,12 @@
     </ClInclude>
     <ClInclude Include="..\GLFW\glfw3native.h">
       <Filter>GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="..\implot\implot.h">
+      <Filter>implot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\implot\implot_internal.h">
+      <Filter>implot</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
