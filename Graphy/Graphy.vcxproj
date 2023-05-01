@@ -163,7 +163,7 @@
     <ClInclude Include="..\implot\implot.h" />
     <ClInclude Include="..\implot\implot_internal.h" />
     <ClInclude Include="..\KHR\khrplatform.h" />
-    <ClInclude Include="presets.hpp" />
+    <ClInclude Include="Vertex.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\libs\glfw3.lib" />

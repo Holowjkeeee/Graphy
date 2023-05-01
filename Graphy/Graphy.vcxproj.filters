@@ -65,9 +65,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="presets.hpp">
-      <Filter>Graphy</Filter>
-    </ClInclude>
     <ClInclude Include="..\glad\glad.h">
       <Filter>glad</Filter>
     </ClInclude>
@@ -115,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="..\implot\implot_internal.h">
       <Filter>implot</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.hpp">
+      <Filter>Graphy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
