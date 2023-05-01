@@ -1,8 +1,6 @@
 # Graphy
 Visualisation of simple graph related task solution
 
-![screenshot](./SolutionItems/screenshot.jpg)
-
 ## Task
 N points are given in the plane. Construct a tree, the vertices of which are all given points, 
 and the total length of all edges is minimal
