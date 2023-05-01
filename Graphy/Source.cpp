@@ -5,11 +5,181 @@
 #include <imgui/imgui_internal.h>
 #include <GLFW/glfw3.h>
 #include <implot/implot.h>
+#include <queue>
 #include <iostream>
+#include <string_view>
 #include <random>
 #include <string>
 #include <math.h>
 #include <stdio.h>
+
+namespace Graphy 
+{
+
+long double getDistance(ImPlotPoint a, ImPlotPoint b)
+{
+    long double cathetusX = std::abs(a.x - b.x);
+    long double cathetusY = std::abs(a.y - b.y);
+
+    return std::sqrt(cathetusX * cathetusX + cathetusY * cathetusY);
+}
+
+using weight = long double;
+
+class Vertex {
+public:
+    Vertex(){}
+    Vertex(size_t id, ImPlotPoint position) : m_id(id), m_position(position){}
+
+    size_t m_id;
+    ImPlotPoint m_position;
+
+    bool operator==(const Vertex& v) const { return m_position == v.m_position && m_id == v.m_id; }
+};
+
+class Edge
+{
+public:
+    Edge(){}
+    Edge(Vertex a, Vertex b, weight w) : m_a(a), m_b(b), m_weight(w){}
+
+    Vertex m_a;
+    Vertex m_b;
+    weight m_weight;
+
+    bool operator==(const Edge& e) const { return e.m_a == m_a && e.m_b == m_b && e.m_weight == m_weight; }
+};
+
+/// <summary>
+/// Just a connected graph since the task requires exactly connected one
+/// </summary>
+class ConnectedGraph {
+public:
+    // Graph structure
+    std::vector<Edge> m_adjacencyList;
+    // Graph's MST
+    std::vector<Edge> MST;
+    // Verticies graph uses
+    std::vector<Vertex> m_verticies;
+
+    size_t getVerticiesQuantity() const
+    {
+        return m_verticies.size();
+    }
+
+    long double get_MST_cost()
+    {
+        long double output = 0;
+        for (auto x : MST)
+            output += x.m_weight;
+        return output;
+    }
+
+    void addVertex(ImPlotPoint point)
+    {
+        auto new_vertex = Vertex( m_verticies.size(), point );
+        for (const auto& v : m_verticies)
+        {
+            weight ab_distance = getDistance(v.m_position, new_vertex.m_position);
+            connectVerticies(v, new_vertex, ab_distance);
+            connectVerticies(new_vertex, v, ab_distance);
+        }
+        m_verticies.emplace_back(new_vertex);
+        if (m_verticies.size() > 2)
+        {
+            findMST();
+        }
+        else
+        {
+            MST.clear();
+        }
+    }
+
+    void connectVerticies(Vertex a, Vertex b, weight weight)
+    {
+        m_adjacencyList.emplace_back(a, b, weight);
+    }
+
+    void eraseEdge(Vertex a, Vertex b)
+    {
+        std::erase_if(m_adjacencyList,
+            [&a, &b](Edge edge_value)
+            { return edge_value.m_a == a && edge_value.m_b == b || edge_value.m_a == b && edge_value.m_b == a; }
+        );
+    };
+
+    void eraseEdge(Edge const* edge)
+    {
+        std::erase_if(m_adjacencyList, [edge](Edge e) {return e == *edge; });
+    }
+
+    void eraseVertex(ImPlotPoint point)
+    {
+         auto found = *(std::ranges::find_if(m_verticies.begin(), m_verticies.end(),
+             [&point](Vertex vertex) {return vertex.m_position == point; }));
+         std::erase_if(m_adjacencyList, [&found](Edge edge)
+             {return edge.m_a == found || edge.m_b == found; });
+         std::erase(m_verticies, found);
+         if (m_verticies.size() > 2) 
+         {
+             findMST();
+         }
+         else
+         {
+             MST.clear();
+         }
+    }
+
+
+    void findMST()
+    {
+        MST.clear();
+
+        std::queue< Vertex > pq;
+
+        // Create a vector for keys and initialize all
+        // keys as infinite (INF)
+        std::vector<int> key(m_verticies.size(), 999999);
+
+        // Keep track of vertices included in MST
+        std::vector<bool> inMST(m_verticies.size(), false);
+
+        // Insert source itself in priority queue and initialize its key as 0.
+        pq.emplace(m_verticies.at(0));
+
+        while (!pq.empty())
+        {
+            int u = pq.front().m_id;
+            pq.pop();
+
+            if (inMST.at(u) == true) {
+                continue;
+            }
+
+            inMST.at(u) = true;
+
+            Edge shortest_available;
+            for (auto edge : m_adjacencyList)
+            {
+                if (edge.m_a.m_id == u && !inMST.at(edge.m_b.m_id)) pq.push(edge.m_b);
+                if (edge.m_a.m_id == u && !inMST.at(edge.m_b.m_id) && edge.m_weight < key.at(u))
+                {
+                    key.at(u) = edge.m_weight;
+                    shortest_available = edge;
+                }
+            }
+            MST.emplace_back(shortest_available);
+        }
+    };
+};
+
+
+}
+
+
+
+
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -68,16 +238,9 @@ void initGlad()
     }
 }
 
-long double getDistance(ImPlotPoint a, ImPlotPoint b)
-{
-    long double cathetusX = std::abs(a.x - b.x);
-    long double cathetusY = std::abs(a.y - b.y);
-
-    return std::sqrt(cathetusX * cathetusX + cathetusY * cathetusY);
-}
-
-ImVector<ImPlotPoint> data;
-double solutionCost;
+Graphy::ConnectedGraph graph = Graphy::ConnectedGraph();
+static ImVector<ImPlotPoint> data;
+static double solutionCost;
 
 template <typename T>
 class Optional {
@@ -90,13 +253,13 @@ public:
     T GetValue() { return m_value; }
 };
 
-Optional<ImPlotPoint> find_nearby_point(ImVector<ImPlotPoint>* vector, const ImPlotPoint* v)
+Optional<ImPlotPoint> find_nearby_point(ImVector<ImPlotPoint>* vector, ImPlotPoint v)
 {
     const double ALLOWED_MISTAKE = 0.1;
     Optional<ImPlotPoint> output;
     for (auto item : *vector)
     {
-        if (getDistance(item, *v) <= ALLOWED_MISTAKE)
+        if (Graphy::getDistance(item, v) <= ALLOWED_MISTAKE)
         {
             output.SetValue(item);
             break;
@@ -118,6 +281,7 @@ void StylePlot() {
     ImPlot::SetupAxesLimits(0, 10, 0, 10);
 
     ImPlot::GetStyle().MarkerSize = 6;
+
 }
 
 float GetWindowContentRegionHeight() 
@@ -130,6 +294,29 @@ double solve()
     std::minstd_rand rand;
     rand.seed(42);
     return rand();
+}
+
+void drawGraph()
+{
+    for (auto x : graph.m_adjacencyList)
+    {
+        ImPlot::GetPlotDrawList()->AddLine(
+            ImPlot::PlotToPixels(x.m_a.m_position),
+            ImPlot::PlotToPixels(x.m_b.m_position),
+            IM_COL32(128, 0, 255, 30), 0.2f
+        );
+    }
+    if (!graph.MST.empty()) 
+    {
+        for (auto x : graph.MST)
+        {
+            ImPlot::GetPlotDrawList()->AddLine(
+                ImPlot::PlotToPixels(x.m_a.m_position),
+                ImPlot::PlotToPixels(x.m_b.m_position),
+                IM_COL32(255, 255, 0, 255), 3.f
+            );
+        }
+    }
 }
 
 void ShowUI() {
@@ -146,10 +333,11 @@ void ShowUI() {
 
             if (ImPlot::IsPlotHovered() && ImGui::IsMouseClicked(0) && ImGui::GetIO().KeyCtrl) {
                 ImPlotPoint pt = ImPlot::GetPlotMousePos();
-                Optional<ImPlotPoint> found = find_nearby_point(&data, &pt);
-                if (!found.IsValuePresented) 
+                Optional<ImPlotPoint> found = find_nearby_point(&data, pt);
+                if (!found.IsValuePresented)
                 {
                     data.push_back(pt);
+                    graph.addVertex(pt);
 
                     if (data.Size > 1)
                         data.find_erase(ImPlotPoint(-2, -2)); // NOTE code smell
@@ -158,10 +346,11 @@ void ShowUI() {
 
             else if (ImPlot::IsPlotHovered() && ImGui::IsMouseClicked(0) && ImGui::GetIO().KeyShift) {
                 ImPlotPoint pt = ImPlot::GetPlotMousePos();
-                Optional<ImPlotPoint> found = find_nearby_point(&data, &pt);
+                Optional<ImPlotPoint> found = find_nearby_point(&data, pt);
                 if (found.IsValuePresented)
                 {
                     data.find_erase(found.GetValue());
+                    graph.eraseVertex(found.GetValue());
 
                     if (data.Size < 1)
                         data.push_back(ImPlotPoint(-2, -2)); // NOTE code smell
@@ -171,6 +360,8 @@ void ShowUI() {
             ImPlot::PlotScatter("Points", &data[0].x, &data[0].y, data.Size,
                 ImPlotFlags_NoTitle | ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoFrame,
                 0, 2 * sizeof(double));
+                drawGraph();
+
             ImPlot::EndPlot();
         }
 
@@ -179,15 +370,9 @@ void ShowUI() {
 
     if (ImGui::Begin("PlotSettings", nullptr))
     {
-        bool isSolutionRequsted = ImGui::Button("Solve");
-
-        if (isSolutionRequsted)
+        if (auto cost = graph.get_MST_cost() != NULL) 
         {
-            solutionCost = solve();
-        }
-        if (solutionCost != NULL) 
-        {
-            ImGui::Text("%f", solutionCost);
+            ImGui::Text("MST cost: %f", graph.get_MST_cost());
         }
 
         ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_NoBordersInBody;
@@ -220,7 +405,6 @@ void ShowUI() {
 
 
 int main() {
-
     const char* glsl_version = initGlfwSettings();
 
     // glfw window creation

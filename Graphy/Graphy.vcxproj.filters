@@ -113,9 +113,6 @@
     <ClInclude Include="..\implot\implot_internal.h">
       <Filter>implot</Filter>
     </ClInclude>
-    <ClInclude Include="Vertex.hpp">
-      <Filter>Graphy</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\libs\glfw3.lib">

@@ -108,6 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -163,7 +164,6 @@
     <ClInclude Include="..\implot\implot.h" />
     <ClInclude Include="..\implot\implot_internal.h" />
     <ClInclude Include="..\KHR\khrplatform.h" />
-    <ClInclude Include="Vertex.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\libs\glfw3.lib" />
