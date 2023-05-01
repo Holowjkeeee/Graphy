@@ -252,7 +252,8 @@ namespace ImStb
 // We currently don't have many of those so the effect is currently negligible, but onward intent to add more aggressive ones in the code.
 //#define IMGUI_DEBUG_PARANOID
 #ifdef IMGUI_DEBUG_PARANOID
-#define IM_ASSERT_PARANOID(_EXPR)       IM_ASSERT(_EXPR)
+#define IM_ASSERT_PARANOID(
+)       IM_ASSERT(_EXPR)
 #else
 #define IM_ASSERT_PARANOID(_EXPR)
 #endif
