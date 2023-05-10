@@ -13,6 +13,20 @@
 #include <math.h>
 #include <stdio.h>
 
+
+template <typename T>
+class Optional {
+private:
+    T m_value;
+
+public:
+    bool IsValuePresented = false;
+    void SetValue(T value) { IsValuePresented = true; m_value = value; }
+    T GetValue() { return m_value; }
+};
+
+
+
 namespace Graphy 
 {
 
@@ -75,6 +89,51 @@ public:
         return output;
     }
 
+    void addVertexNearest(ImPlotPoint point)
+    {
+        auto new_vertex = Vertex(m_verticies.size(), point);
+        for (const auto& v : m_verticies)
+        {
+            weight ab_distance = getDistance(v.m_position, new_vertex.m_position);
+            connectVerticies(v, new_vertex, ab_distance);
+            connectVerticies(new_vertex, v, ab_distance);
+        }
+        m_verticies.emplace_back(new_vertex);
+
+        if (m_verticies.size() == 3)
+        {
+            findMST();
+        }
+        else if (m_verticies.size() > 3)
+        {
+            Edge shortest = Edge(new_vertex, find_nearest_vertex(point), Graphy::getDistance(new_vertex.m_position, point));
+            for (Edge edge : m_adjacencyList)
+            {
+                if (edge.m_a.m_id == shortest.m_a.m_id && edge.m_b.m_id == shortest.m_b.m_id)
+                    MST.emplace_back(edge);
+            }
+        }
+        else
+        {
+            MST.clear();
+        }
+    }
+
+    Vertex find_nearest_vertex(ImPlotPoint point)
+    {
+        long double min = LONG_MAX;
+        Vertex output;
+        for (auto& item : m_verticies)
+        {
+            if (Graphy::getDistance(item.m_position, point) < min && item.m_position != point)
+            {   
+                min = Graphy::getDistance(item.m_position, point);
+                output = item;
+            }
+        }
+        return output;  
+    }
+
     void addVertex(ImPlotPoint point)
     {
         auto new_vertex = Vertex( m_verticies.size(), point );
@@ -113,21 +172,25 @@ public:
         std::erase_if(m_adjacencyList, [edge](Edge e) {return e == *edge; });
     }
 
+
     void eraseVertex(ImPlotPoint point)
     {
-         auto found = *(std::ranges::find_if(m_verticies.begin(), m_verticies.end(),
-             [&point](Vertex vertex) {return vertex.m_position == point; }));
-         std::erase_if(m_adjacencyList, [&found](Edge edge)
-             {return edge.m_a == found || edge.m_b == found; });
-         std::erase(m_verticies, found);
-         if (m_verticies.size() > 2) 
-         {
-             findMST();
-         }
-         else
-         {
-             MST.clear();
-         }
+        auto found = *(std::ranges::find_if(m_verticies.begin(), m_verticies.end(),
+            [&point](Vertex vertex) {return vertex.m_position == point; }));
+
+
+        std::erase_if(m_adjacencyList, [&found](Edge edge)
+            {return edge.m_a == found || edge.m_b == found; });
+
+        std::erase(m_verticies, found);
+        if (m_verticies.size() > 2)
+        {
+            findMST();
+        }
+        else
+        {
+            MST.clear();
+        }
     }
 
 
@@ -141,8 +204,19 @@ public:
         // keys as infinite (INF)
         std::vector<int> key(m_verticies.size(), 999999);
 
+        //TODO fix ids
+        size_t max_id = 0;
+
+        for (auto vertex : m_verticies)
+        {
+            if (vertex.m_id > max_id)
+            {
+                max_id = vertex.m_id;
+            }
+        }
+
         // Keep track of vertices included in MST
-        std::vector<bool> inMST(m_verticies.size(), false);
+        std::vector<bool> inMST(max_id+1, false);
 
         // Insert source itself in priority queue and initialize its key as 0.
         pq.emplace(m_verticies.at(0));
@@ -177,9 +251,8 @@ public:
 }
 
 
-
-
-
+Graphy::ConnectedGraph graph = Graphy::ConnectedGraph();
+static ImVector<ImPlotPoint> data;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -238,20 +311,7 @@ void initGlad()
     }
 }
 
-Graphy::ConnectedGraph graph = Graphy::ConnectedGraph();
-static ImVector<ImPlotPoint> data;
-static double solutionCost;
 
-template <typename T>
-class Optional {
-private:
-    T m_value;
-
-public:
-    bool IsValuePresented = false;
-    void SetValue(T value) { IsValuePresented = true; m_value = value; }
-    T GetValue() { return m_value; }
-};
 
 Optional<ImPlotPoint> find_nearby_point(ImVector<ImPlotPoint>* vector, ImPlotPoint v)
 {
@@ -289,12 +349,6 @@ float GetWindowContentRegionHeight()
     return ImGui::GetWindowContentRegionMax().y - ImGui::GetWindowContentRegionMin().y; 
 }
 
-double solve()
-{
-    std::minstd_rand rand;
-    rand.seed(42);
-    return rand();
-}
 
 void drawGraph()
 {
@@ -319,6 +373,7 @@ void drawGraph()
     }
 }
 
+
 void ShowUI() {
     if (data.Size < 1)
         data.push_back(ImPlotPoint(-2, -2)); // NOTE code smell
@@ -337,7 +392,7 @@ void ShowUI() {
                 if (!found.IsValuePresented)
                 {
                     data.push_back(pt);
-                    graph.addVertex(pt);
+                    graph.addVertexNearest(pt);
 
                     if (data.Size > 1)
                         data.find_erase(ImPlotPoint(-2, -2)); // NOTE code smell
