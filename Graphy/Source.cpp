@@ -7,10 +7,7 @@
 #include <implot/implot.h>
 #include <queue>
 #include <iostream>
-#include <string_view>
 #include <random>
-#include <string>
-#include <math.h>
 #include <stdio.h>
 
 
@@ -207,6 +204,7 @@ public:
         //TODO fix ids
         size_t max_id = 0;
 
+        // TODO replace with max()
         for (auto vertex : m_verticies)
         {
             if (vertex.m_id > max_id)
@@ -240,11 +238,11 @@ public:
                 {
                     key.at(u) = edge.m_weight;
                     shortest_available = edge;
-                }
+                } 
             }
             MST.emplace_back(shortest_available);
         }
-    };
+    }
 };
 
 

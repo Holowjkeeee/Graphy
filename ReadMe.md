@@ -14,7 +14,7 @@ and the total length of all edges is minimal is a connected undirected
 I'm going to show first existing MST since quantity of solutions haven't mentioned.
 To build this kind of tree 
 1. Form full-connected graph with all N points
-2. Perform Prim's algorithm
+2. Perform Prime's algorithm
 
 ## Realisation
 I want to use C++ and the most awesome way to create GUI using C++ is Dear ImGui.
